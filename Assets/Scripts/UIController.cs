@@ -110,6 +110,10 @@ public class UIController : MonoBehaviour
                     break;
                 case "Pause/Resume Button":
                     pauseAnimationFlag = !pauseAnimationFlag;
+                    if(pauseAnimationFlag)
+                        DOTween.PauseAll();
+                    else
+                        DOTween.PlayAll();
                     break;
                 case "Reset Button":
                     resetButtonFlag = false;
@@ -188,56 +192,60 @@ public class UIController : MonoBehaviour
         button.transform.position = originalLocation;
     }
 
-    private void ScalingButton(Button button, Vector3 targetScale, float duration)
+    private Tween ScalingButton(Button button, Vector3 targetScale, float duration)
     {
         Vector3 originalScale = button.transform.localScale;
 
-        button.transform.DOScale(targetScale, duration).OnComplete(() => button.transform.DOScale(originalScale, duration));
+        return button.transform.DOScale(targetScale, duration).OnComplete(() => button.transform.DOScale(originalScale, duration));
     }
 
-    private void ChangingToRandomSprites(Button button, Sprite[] sprites, float duration)
+    private Tween ChangingToRandomSprites(Button button, Sprite[] sprites, float duration)
     {
         int randomIndex = Random.Range(0, sprites.Length);
         Sprite newSprite = sprites[randomIndex];
         Color buttonColor = button.GetComponent<Image>().color;
 
-        button.GetComponent<Image>().DOBlendableColor(buttonColor, duration)
+        return button.GetComponent<Image>().DOBlendableColor(buttonColor, duration)
             .OnComplete(() => button.GetComponent<Image>().sprite = newSprite);
     }
 
-    private void JumpButton(Button button, float duration)
+    private Tween JumpButton(Button button, float duration)
     {
         Vector3 originalPosition = button.transform.position;
         highestJumpLocation = originalPosition;
         highestJumpLocation.y = originalPosition.y + 300;
-        button.transform.DOMove(highestJumpLocation, duration).OnComplete(() => button.transform.DOMove(originalPosition, duration));
+
+        return button.transform.DOMove(highestJumpLocation, duration).OnComplete(() => button.transform.DOMove(originalPosition, duration));
     }
 
-    private void SpinButton(Button button, float duration)
+    private Tween SpinButton(Button button, float duration)
     {
         float totalRotation = 360f; // Assuming you want to spin the object 360 degrees
 
-        button.transform.DORotate(new Vector3(0, 0, totalRotation), duration, RotateMode.FastBeyond360)
+        return button.transform.DORotate(new Vector3(0, 0, totalRotation), duration, RotateMode.FastBeyond360)
             .SetEase(Ease.Linear)
             .OnComplete(() => button.transform.rotation = originalRotation);
     }
 
-    private void FadeButton(Button button, float duration)
+    private Tween FadeButton(Button button, float duration)
     {
         Image buttonImage = button.GetComponent<Image>();
         Color originalColor = buttonImage.color;
 
-        buttonImage.DOColor(new Color(originalColor.r, originalColor.g, originalColor.b, 0), duration)
+        return buttonImage.DOColor(new Color(originalColor.r, originalColor.g, originalColor.b, 0), duration)
             .SetEase(Ease.Linear).OnComplete(() => buttonImage.DOColor(originalColor, 1));
     }
 
     private void RunAllAnimation(Button button)
     {
-        ScalingButton(button, targetScale, 1);
-        ChangingToRandomSprites(button, sprites, 1);
-        JumpButton(button, 1);
-        SpinButton(button, 1);
-        FadeButton(button, 1);
+
+        Sequence sequence = DOTween.Sequence();
+
+        sequence.Append(ScalingButton(button, targetScale, 1))
+            .Append(ChangingToRandomSprites(button, sprites, 1))
+            .Append(JumpButton(button, 1))
+            .Append(SpinButton(button, 1))
+            .Append(FadeButton(button, 1));
     }
 
 }
