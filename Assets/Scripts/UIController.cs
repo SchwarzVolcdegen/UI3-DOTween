@@ -9,41 +9,41 @@ using UnityEngine.Events;
 public class UIController : MonoBehaviour
 {
     public Button playButton;
-    [SerializeField]
     public Button pauseButton;
-    [SerializeField]
     public Button resetButton;
-    [SerializeField]
     public Button rescaleButton;
-    [SerializeField]
     public Button randomSpriteButton;
-    [SerializeField]
     public Button jumpButton;
-    [SerializeField]
     public Button spinButton;
-    [SerializeField]
     public Button fadeButton;
-    [SerializeField]
     public Button runAllButton;
-    [SerializeField]
     public Button animatedButton;
-    [SerializeField]
     public GameObject animationControlUI;
     public Vector3 targetScale;
     public Sprite[] sprites;
-    private Button currentActionControlButton;
 
-    private bool pauseAnimationFlag = false;
-    private bool resetButtonFlag = true;
+    [SerializeField] private Button currentActionControlButton;
 
-    private Quaternion originalRotation;
-    private Vector3 originalScale;
-    private Vector3 originalLocation;
-    private Vector3 highestJumpLocation;
-    private Sprite originalSprite;
-    private Color originalButtonImageColor;
+
+    [SerializeField] private bool pauseAnimationFlag = false;
+
+    [SerializeField] private bool resetButtonFlag = true;
+
+
+    [SerializeField] private Quaternion originalRotation;
+
+    [SerializeField] private Vector3 originalScale;
+
+    [SerializeField] private Vector3 originalLocation;
+
+    [SerializeField] private Vector3 highestJumpLocation;
+
+    [SerializeField] private Sprite originalSprite;
+
+    [SerializeField] private Color originalButtonImageColor;
     //private float animationRuntime = 4f;
-    private List<UnityAction> buttonActionListeners = new List<UnityAction>();
+
+    [SerializeField] private List<UnityAction> buttonActionListeners = new List<UnityAction>();
     // Start is called before the first frame update
 
 
@@ -110,7 +110,7 @@ public class UIController : MonoBehaviour
                     break;
                 case "Pause/Resume Button":
                     pauseAnimationFlag = !pauseAnimationFlag;
-                    if(pauseAnimationFlag)
+                    if (pauseAnimationFlag)
                         DOTween.PauseAll();
                     else
                         DOTween.PlayAll();
